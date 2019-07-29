@@ -110,8 +110,24 @@ var UIController = (function(){
             newHTML = newHTML.replace('%value%', obj.value);
 
             // instert the HTML into the DOM
-            document.quesrySelector(element).insertAdjacentHTML('beforeend', newHTML);
+            document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 
+        },
+
+        clearFields: function(){
+            var fields, fieldsArr;
+            // ',' - separates different selectors, so you can actually call multiple selectors and join them together
+            // !! querySelectorAll returns a list, not an array
+            fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+            // converting a list into an array, so we can loop over the array
+            fieldsArr = Array.prototype.slice.call(fields);
+            // loop over the array , forEach have access to three arguments: current value, index number and entire array
+            fieldsArr.forEach(function(current, index, array) {
+                // clear each input
+                current.value = '';
+            });
+            // add focus back to this element
+            fieldsArr[0].focus();
         }
     };
 
@@ -147,7 +163,10 @@ var controller = (function(budgetCtrl, UICtrl){
         newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
         // add new item to the UI
+        UICtrl.addListItem(newItem, input.type);
 
+        // clear the fields
+        UICtrl.clearFields();
 
         // calculate the budget 
 
