@@ -192,6 +192,13 @@ var UIController = (function(){
         return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
     };
 
+    var nodeListForEach = function(list, callback) {
+        for(var i = 0; i < list.length; i++){
+            callback(list[i], i);
+
+        }
+    }
+
     return {
         getInput: function(){
             // return an object with things that user typed in
@@ -207,13 +214,6 @@ var UIController = (function(){
 
         displayPercentages: function(percentages){
             var fields = document.querySelectorAll(DOMstrings.expensesPercLabel); // returns node list, its because the DOM tree where all of the html elements of our page are stored, each element is called a node.
-
-            var nodeListForEach = function(list, callback) {
-                for(var i = 0; i < list.length; i++){
-                    callback(list[i], i);
-
-                }
-            }
 
             nodeListForEach(fields, function(current, index){
                 if(percentages[index] > 0){
@@ -232,6 +232,21 @@ var UIController = (function(){
             var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
             document.querySelector(DOMstrings.dateLabel).textContent = months[month] + ' ' + year;
+            
+        },
+
+        changeType: function(){
+            var fields = document.querySelectorAll(
+                DOMstrings.inputType + ',' +
+                DOMstrings.inputDescription + ',' +
+                DOMstrings.inputValue
+            );
+            
+            nodeListForEach(fields, function(cur){
+                cur.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
             
         },
 
@@ -323,6 +338,8 @@ var controller = (function(budgetCtrl, UICtrl){
         });
 
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changeType);
     };
 
     var updateBudget = function() {
